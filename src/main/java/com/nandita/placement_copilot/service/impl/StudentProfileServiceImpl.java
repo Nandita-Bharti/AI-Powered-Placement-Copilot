@@ -1,6 +1,7 @@
 package com.nandita.placement_copilot.service.impl;
 
 import com.nandita.placement_copilot.dto.StudentProfileRequest;
+import com.nandita.placement_copilot.dto.StudentProfileResponse;
 import com.nandita.placement_copilot.entity.StudentProfile;
 import com.nandita.placement_copilot.entity.User;
 import com.nandita.placement_copilot.repository.StudentProfileRepository;
@@ -40,5 +41,23 @@ public class StudentProfileServiceImpl implements StudentProfileService {
                 .build();
 
         studentProfileRepository.save(profile);
+    }
+    @Override
+    public StudentProfileResponse getProfile(Long userId) {
+
+        StudentProfile profile = studentProfileRepository
+                .findByUserId(userId)
+                .orElseThrow(() ->
+                        new RuntimeException("Student profile not found"));
+
+        return StudentProfileResponse.builder()
+                .id(profile.getId())
+                .phone(profile.getPhone())
+                .college(profile.getCollege())
+                .degree(profile.getDegree())
+                .graduationYear(profile.getGraduationYear())
+                .targetRole(profile.getTargetRole())
+                .skills(profile.getSkills())
+                .build();
     }
 }

@@ -1,5 +1,6 @@
 package com.nandita.placement_copilot.service;
 
+import com.nandita.placement_copilot.entity.StudentProfile;
 import com.nandita.placement_copilot.entity.User;
 import com.nandita.placement_copilot.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -28,5 +29,7 @@ public class CustomUserDetailsService implements UserDetailsService {
                 .roles(user.getRole())
                 .build();
     }
+
+
 }
 
