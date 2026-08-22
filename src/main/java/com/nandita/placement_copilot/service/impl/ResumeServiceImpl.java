@@ -4,6 +4,7 @@ import com.nandita.placement_copilot.entity.Resume;
 import com.nandita.placement_copilot.entity.User;
 import com.nandita.placement_copilot.repository.ResumeRepository;
 import com.nandita.placement_copilot.repository.UserRepository;
+import com.nandita.placement_copilot.service.PdfTextExtractorService;
 import com.nandita.placement_copilot.service.ResumeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -22,6 +23,7 @@ public class ResumeServiceImpl implements ResumeService {
 
     private final ResumeRepository resumeRepository;
     private final UserRepository userRepository;
+    private final PdfTextExtractorService pdfTextExtractorService;
 
     private final String uploadDirectory = "uploads/resumes";
 
@@ -54,14 +56,42 @@ public class ResumeServiceImpl implements ResumeService {
 
             Files.copy(file.getInputStream(), filePath);
 
-            Resume resume = Resume.builder()
-                    .fileName(file.getOriginalFilename())
-                    .filePath(filePath.toString())
-                    .uploadedAt(LocalDateTime.now())
-                    .user(user)
-                    .build();
+            String extractedText = pdfTextExtractorService
+                    .extractText(filePath.toString());
 
-            resumeRepository.save(resume);
+            Resume existingResume = resumeRepository
+                    .findByUserId(userId)
+                    .orElse(null);
+
+            if (existingResume != null) {
+
+                try {
+                    Files.deleteIfExists(
+                            Paths.get(existingResume.getFilePath())
+                    );
+                } catch (IOException e) {
+                    throw new RuntimeException("Failed to delete old resume", e);
+                }
+
+                existingResume.setFileName(file.getOriginalFilename());
+                existingResume.setFilePath(filePath.toString());
+                existingResume.setExtractedText(extractedText);
+                existingResume.setUploadedAt(LocalDateTime.now());
+
+                resumeRepository.save(existingResume);
+
+            } else {
+
+                Resume resume = Resume.builder()
+                        .fileName(file.getOriginalFilename())
+                        .filePath(filePath.toString())
+                        .extractedText(extractedText)
+                        .uploadedAt(LocalDateTime.now())
+                        .user(user)
+                        .build();
+
+                resumeRepository.save(resume);
+            }
 
         } catch (IOException e) {
             throw new RuntimeException("Failed to store resume", e);

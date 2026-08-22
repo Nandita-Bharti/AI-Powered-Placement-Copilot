@@ -22,6 +22,9 @@ public class Resume {
 
     private String filePath;
 
+    @Column(columnDefinition = "TEXT")
+    private String extractedText;
+
     private LocalDateTime uploadedAt;
 
     @OneToOne
