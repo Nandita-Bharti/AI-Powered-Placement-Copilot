@@ -1,6 +1,8 @@
 package com.nandita.placement_copilot.service;
 
+import com.nandita.placement_copilot.dto.ResumeAnalysisResponse;
+
 public interface ResumeAnalysisService {
 
-    String analyzeResume(Long userId);
+    ResumeAnalysisResponse analyzeResume(Long userId);
 }

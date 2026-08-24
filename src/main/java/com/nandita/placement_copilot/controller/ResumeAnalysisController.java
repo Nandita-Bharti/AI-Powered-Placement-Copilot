@@ -1,5 +1,6 @@
 package com.nandita.placement_copilot.controller;
 
+import com.nandita.placement_copilot.dto.ResumeAnalysisResponse;
 import com.nandita.placement_copilot.entity.User;
 import com.nandita.placement_copilot.repository.UserRepository;
 import com.nandita.placement_copilot.service.ResumeAnalysisService;
@@ -17,7 +18,7 @@ public class ResumeAnalysisController {
     private final UserRepository userRepository;
 
     @GetMapping("/analyze")
-    public ResponseEntity<String> analyzeResume(
+    public ResponseEntity<ResumeAnalysisResponse> analyzeResume(
             Authentication authentication) {
 
         String email = authentication.getName();
@@ -26,7 +27,7 @@ public class ResumeAnalysisController {
                 .orElseThrow(() ->
                         new RuntimeException("User not found"));
 
-        String analysis =
+        ResumeAnalysisResponse analysis =
                 resumeAnalysisService.analyzeResume(user.getId());
 
         return ResponseEntity.ok(analysis);
