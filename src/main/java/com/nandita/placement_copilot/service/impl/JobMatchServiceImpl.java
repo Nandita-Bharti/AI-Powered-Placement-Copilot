@@ -1,6 +1,7 @@
 package com.nandita.placement_copilot.service.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nandita.placement_copilot.dto.JobMatchHistoryResponse;
 import com.nandita.placement_copilot.dto.JobMatchRequest;
 import com.nandita.placement_copilot.dto.JobMatchResponse;
 import com.nandita.placement_copilot.entity.Resume;
@@ -10,12 +11,21 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.stereotype.Service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.nandita.placement_copilot.entity.JobMatchHistory;
+import com.nandita.placement_copilot.repository.JobMatchHistoryRepository;
+
+import java.time.LocalDateTime;
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class JobMatchServiceImpl implements JobMatchService {
 
     private final ResumeRepository resumeRepository;
+    private final JobMatchHistoryRepository jobMatchHistoryRepository;
     private final ChatClient.Builder chatClientBuilder;
+
 
     @Override
     public JobMatchResponse matchResumeWithJob(
@@ -93,10 +103,37 @@ public class JobMatchServiceImpl implements JobMatchService {
 
             ObjectMapper objectMapper = new ObjectMapper();
 
-            return objectMapper.readValue(
-                    response,
-                    JobMatchResponse.class
-            );
+            JobMatchResponse jobMatchResponse =
+                    objectMapper.readValue(
+                            response,
+                            JobMatchResponse.class
+                    );
+
+            JobMatchHistory history = JobMatchHistory.builder()
+                    .jobDescription(request.getJobDescription())
+                    .matchScore(jobMatchResponse.getMatchScore())
+                    .matchingSkills(
+                            objectMapper.writeValueAsString(
+                                    jobMatchResponse.getMatchingSkills()
+                            )
+                    )
+                    .missingSkills(
+                            objectMapper.writeValueAsString(
+                                    jobMatchResponse.getMissingSkills()
+                            )
+                    )
+                    .recommendations(
+                            objectMapper.writeValueAsString(
+                                    jobMatchResponse.getRecommendations()
+                            )
+                    )
+                    .analyzedAt(LocalDateTime.now())
+                    .user(resume.getUser())
+                    .build();
+
+            jobMatchHistoryRepository.save(history);
+
+            return jobMatchResponse;
 
         } catch (Exception e) {
 
@@ -105,5 +142,61 @@ public class JobMatchServiceImpl implements JobMatchService {
                     e
             );
         }
+    }
+
+    @Override
+    public List<JobMatchHistoryResponse> getMatchHistory(Long userId) {
+
+        List<JobMatchHistory> historyList =
+                jobMatchHistoryRepository
+                        .findByUserIdOrderByAnalyzedAtDesc(userId);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        return historyList.stream()
+                .map(history -> {
+
+                    try {
+
+                        return JobMatchHistoryResponse.builder()
+                                .id(history.getId())
+                                .jobDescription(
+                                        history.getJobDescription()
+                                )
+                                .matchScore(
+                                        history.getMatchScore()
+                                )
+                                .matchingSkills(
+                                        objectMapper.readValue(
+                                                history.getMatchingSkills(),
+                                                List.class
+                                        )
+                                )
+                                .missingSkills(
+                                        objectMapper.readValue(
+                                                history.getMissingSkills(),
+                                                List.class
+                                        )
+                                )
+                                .recommendations(
+                                        objectMapper.readValue(
+                                                history.getRecommendations(),
+                                                List.class
+                                        )
+                                )
+                                .analyzedAt(
+                                        history.getAnalyzedAt()
+                                )
+                                .build();
+
+                    } catch (Exception e) {
+
+                        throw new RuntimeException(
+                                "Failed to parse match history",
+                                e
+                        );
+                    }
+                })
+                .toList();
     }
 }

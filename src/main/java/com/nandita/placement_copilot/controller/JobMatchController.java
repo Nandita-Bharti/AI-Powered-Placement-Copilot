@@ -1,5 +1,6 @@
 package com.nandita.placement_copilot.controller;
 
+import com.nandita.placement_copilot.dto.JobMatchHistoryResponse;
 import com.nandita.placement_copilot.dto.JobMatchRequest;
 import com.nandita.placement_copilot.dto.JobMatchResponse;
 import com.nandita.placement_copilot.entity.User;
@@ -9,6 +10,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/job-match")
@@ -36,5 +39,21 @@ public class JobMatchController {
                 );
 
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/history")
+    public ResponseEntity<List<JobMatchHistoryResponse>> getMatchHistory(
+            Authentication authentication) {
+
+        String email = authentication.getName();
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() ->
+                        new RuntimeException("User not found"));
+
+        List<JobMatchHistoryResponse> history =
+                jobMatchService.getMatchHistory(user.getId());
+
+        return ResponseEntity.ok(history);
     }
 }
