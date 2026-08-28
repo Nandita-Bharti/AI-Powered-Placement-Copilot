@@ -169,4 +169,34 @@ public class StudyPlanServiceImpl implements StudyPlanService {
             );
         }
     }
+
+    @Override
+    public List<StudyPlanResponse> getStudyPlanHistory(Long userId) {
+
+        List<StudyPlan> plans =
+                studyPlanRepository
+                        .findByUserIdOrderByCreatedAtDesc(userId);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        return plans.stream()
+                .map(plan -> {
+
+                    try {
+
+                        return objectMapper.readValue(
+                                plan.getPlanData(),
+                                StudyPlanResponse.class
+                        );
+
+                    } catch (Exception e) {
+
+                        throw new RuntimeException(
+                                "Failed to parse study plan history",
+                                e
+                        );
+                    }
+                })
+                .toList();
+    }
 }

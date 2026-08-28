@@ -10,6 +10,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/study-plan")
 @RequiredArgsConstructor
@@ -36,5 +38,23 @@ public class StudyPlanController {
                 );
 
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/history")
+    public ResponseEntity<List<StudyPlanResponse>> getStudyPlanHistory(
+            Authentication authentication) {
+
+        String email = authentication.getName();
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() ->
+                        new RuntimeException("User not found"));
+
+        List<StudyPlanResponse> history =
+                studyPlanService.getStudyPlanHistory(
+                        user.getId()
+                );
+
+        return ResponseEntity.ok(history);
     }
 }
