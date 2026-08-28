@@ -11,6 +11,9 @@ import com.nandita.placement_copilot.service.StudyPlanService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.stereotype.Service;
+import com.nandita.placement_copilot.entity.StudyPlan;
+import com.nandita.placement_copilot.repository.StudyPlanRepository;
+import java.time.LocalDateTime;
 
 import java.util.List;
 
@@ -21,6 +24,7 @@ public class StudyPlanServiceImpl implements StudyPlanService {
     private final StudentProfileRepository studentProfileRepository;
     private final JobMatchHistoryRepository jobMatchHistoryRepository;
     private final ChatClient.Builder chatClientBuilder;
+    private final StudyPlanRepository studyPlanRepository;
 
     @Override
     public StudyPlanResponse generateStudyPlan(
@@ -127,10 +131,35 @@ public class StudyPlanServiceImpl implements StudyPlanService {
 
             ObjectMapper objectMapper = new ObjectMapper();
 
-            return objectMapper.readValue(
-                    response,
-                    StudyPlanResponse.class
-            );
+            StudyPlanResponse studyPlanResponse =
+                    objectMapper.readValue(
+                            response,
+                            StudyPlanResponse.class
+                    );
+
+            StudyPlan studyPlan = StudyPlan.builder()
+                    .planData(
+                            objectMapper.writeValueAsString(
+                                    studyPlanResponse
+                            )
+                    )
+                    .targetRole(
+                            studyPlanResponse.getTargetRole()
+                    )
+                    .totalDays(
+                            studyPlanResponse.getTotalDays()
+                    )
+                    .createdAt(
+                            LocalDateTime.now()
+                    )
+                    .user(
+                            profile.getUser()
+                    )
+                    .build();
+
+            studyPlanRepository.save(studyPlan);
+
+            return studyPlanResponse;
 
         } catch (Exception e) {
 
