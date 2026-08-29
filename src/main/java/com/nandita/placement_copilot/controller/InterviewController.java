@@ -1,9 +1,6 @@
 package com.nandita.placement_copilot.controller;
 
-import com.nandita.placement_copilot.dto.InterviewAnswerRequest;
-import com.nandita.placement_copilot.dto.InterviewEvaluationResponse;
-import com.nandita.placement_copilot.dto.InterviewQuestionResponse;
-import com.nandita.placement_copilot.dto.InterviewStartRequest;
+import com.nandita.placement_copilot.dto.*;
 import com.nandita.placement_copilot.entity.User;
 import com.nandita.placement_copilot.repository.UserRepository;
 import com.nandita.placement_copilot.service.InterviewService;
@@ -55,6 +52,26 @@ public class InterviewController {
                 interviewService.submitAnswer(
                         user.getId(),
                         request
+                );
+
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/{interviewId}/result")
+    public ResponseEntity<InterviewResultResponse> getInterviewResult(
+            @PathVariable Long interviewId,
+            Authentication authentication) {
+
+        String email = authentication.getName();
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() ->
+                        new RuntimeException("User not found"));
+
+        InterviewResultResponse response =
+                interviewService.getInterviewResult(
+                        user.getId(),
+                        interviewId
                 );
 
         return ResponseEntity.ok(response);

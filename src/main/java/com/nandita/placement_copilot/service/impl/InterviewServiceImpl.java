@@ -1,7 +1,6 @@
 package com.nandita.placement_copilot.service.impl;
 
-import com.nandita.placement_copilot.dto.InterviewQuestionResponse;
-import com.nandita.placement_copilot.dto.InterviewStartRequest;
+import com.nandita.placement_copilot.dto.*;
 import com.nandita.placement_copilot.entity.Interview;
 import com.nandita.placement_copilot.entity.InterviewStatus;
 import com.nandita.placement_copilot.entity.User;
@@ -14,8 +13,7 @@ import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.LocalDateTime;
-import com.nandita.placement_copilot.dto.InterviewAnswerRequest;
-import com.nandita.placement_copilot.dto.InterviewEvaluationResponse;
+
 import com.nandita.placement_copilot.entity.InterviewQuestion;
 
 @Service
@@ -284,5 +282,55 @@ public class InterviewServiceImpl implements InterviewService {
             String feedback,
             String nextQuestion
     ) {
+    }
+
+    @Override
+    public InterviewResultResponse getInterviewResult(
+            Long userId,
+            Long interviewId) {
+
+        Interview interview = interviewRepository
+                .findById(interviewId)
+                .orElseThrow(() ->
+                        new RuntimeException("Interview not found"));
+
+        if (!interview.getUser().getId().equals(userId)) {
+            throw new RuntimeException(
+                    "You are not allowed to access this interview");
+        }
+
+        var questions =
+                interviewQuestionRepository
+                        .findByInterviewIdOrderByQuestionNumberAsc(
+                                interviewId
+                        );
+
+        int answeredQuestions = 0;
+        int totalScore = 0;
+
+        for (InterviewQuestion question : questions) {
+
+            if (question.getScore() != null) {
+                answeredQuestions++;
+                totalScore += question.getScore();
+            }
+        }
+
+        double averageScore = answeredQuestions == 0
+                ? 0.0
+                : (double) totalScore / answeredQuestions;
+
+        return InterviewResultResponse.builder()
+                .interviewId(interview.getId())
+                .interviewType(interview.getInterviewType())
+                .totalQuestions(interview.getTotalQuestions())
+                .answeredQuestions(answeredQuestions)
+                .totalScore(totalScore)
+                .averageScore(
+                        Math.round(averageScore * 100.0) / 100.0
+                )
+                .status(interview.getStatus().name())
+                .recommendations(java.util.List.of())
+                .build();
     }
 }

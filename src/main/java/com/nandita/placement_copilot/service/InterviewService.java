@@ -1,9 +1,6 @@
 package com.nandita.placement_copilot.service;
 
-import com.nandita.placement_copilot.dto.InterviewAnswerRequest;
-import com.nandita.placement_copilot.dto.InterviewEvaluationResponse;
-import com.nandita.placement_copilot.dto.InterviewQuestionResponse;
-import com.nandita.placement_copilot.dto.InterviewStartRequest;
+import com.nandita.placement_copilot.dto.*;
 
 public interface InterviewService {
 
@@ -14,5 +11,10 @@ public interface InterviewService {
     InterviewEvaluationResponse submitAnswer(
             Long userId,
             InterviewAnswerRequest request
+    );
+
+    InterviewResultResponse getInterviewResult(
+            Long userId,
+            Long interviewId
     );
 }
