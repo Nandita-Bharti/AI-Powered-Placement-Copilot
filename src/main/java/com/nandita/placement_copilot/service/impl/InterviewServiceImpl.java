@@ -5,14 +5,18 @@ import com.nandita.placement_copilot.dto.InterviewStartRequest;
 import com.nandita.placement_copilot.entity.Interview;
 import com.nandita.placement_copilot.entity.InterviewStatus;
 import com.nandita.placement_copilot.entity.User;
+import com.nandita.placement_copilot.repository.InterviewQuestionRepository;
 import com.nandita.placement_copilot.repository.InterviewRepository;
 import com.nandita.placement_copilot.repository.UserRepository;
 import com.nandita.placement_copilot.service.InterviewService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.stereotype.Service;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.LocalDateTime;
+import com.nandita.placement_copilot.dto.InterviewAnswerRequest;
+import com.nandita.placement_copilot.dto.InterviewEvaluationResponse;
+import com.nandita.placement_copilot.entity.InterviewQuestion;
 
 @Service
 @RequiredArgsConstructor
@@ -21,6 +25,7 @@ public class InterviewServiceImpl implements InterviewService {
     private final InterviewRepository interviewRepository;
     private final UserRepository userRepository;
     private final ChatClient.Builder chatClientBuilder;
+    private final InterviewQuestionRepository interviewQuestionRepository;
 
     @Override
     public InterviewQuestionResponse startInterview(
@@ -96,11 +101,188 @@ public class InterviewServiceImpl implements InterviewService {
                 .call()
                 .content();
 
+        InterviewQuestion interviewQuestion =
+                InterviewQuestion.builder()
+                        .questionNumber(1)
+                        .question(question)
+                        .interview(interview)
+                        .build();
+
+        interviewQuestionRepository.save(interviewQuestion);
         return InterviewQuestionResponse.builder()
                 .interviewId(interview.getId())
                 .questionNumber(1)
                 .question(question)
                 .interviewType(request.getInterviewType())
                 .build();
+    }
+
+    @Override
+    public InterviewEvaluationResponse submitAnswer(
+            Long userId,
+            InterviewAnswerRequest request) {
+
+        Interview interview = interviewRepository
+                .findById(request.getInterviewId())
+                .orElseThrow(() ->
+                        new RuntimeException("Interview not found"));
+
+        if (!interview.getUser().getId().equals(userId)) {
+            throw new RuntimeException(
+                    "You are not allowed to access this interview");
+        }
+
+        if (interview.getStatus() == InterviewStatus.COMPLETED) {
+            throw new RuntimeException(
+                    "Interview is already completed");
+        }
+
+        InterviewQuestion question =
+                interviewQuestionRepository
+                        .findByInterviewIdAndQuestionNumber(
+                                request.getInterviewId(),
+                                request.getQuestionNumber()
+                        )
+                        .orElseThrow(() ->
+                                new RuntimeException(
+                                        "Interview question not found"));
+
+        if (request.getAnswer() == null ||
+                request.getAnswer().isBlank()) {
+
+            throw new RuntimeException(
+                    "Answer cannot be empty");
+        }
+
+        String prompt = """
+            You are an expert technical interviewer.
+
+            Evaluate the candidate's answer.
+
+            Interview Type:
+            %s
+
+            Question:
+            %s
+
+            Candidate Answer:
+            %s
+
+            Evaluate the answer on a scale of 0 to 10.
+
+            Consider:
+            - Technical correctness
+            - Understanding of the concept
+            - Completeness
+            - Clarity
+
+            Return ONLY valid JSON using exactly:
+
+            {
+              "score": 0,
+              "feedback": "",
+              "nextQuestion": ""
+            }
+
+            Rules:
+            - score must be between 0 and 10.
+            - Give concise but useful feedback.
+            - Generate one relevant next interview question.
+            - Do not provide the answer to the next question.
+            - Return JSON only.
+            - Do not use markdown code fences.
+            """.formatted(
+                interview.getInterviewType(),
+                question.getQuestion(),
+                request.getAnswer()
+        );
+
+        ChatClient chatClient =
+                chatClientBuilder.build();
+
+        String response = chatClient
+                .prompt(prompt)
+                .call()
+                .content();
+
+        try {
+
+            ObjectMapper objectMapper =
+                    new ObjectMapper();
+
+            EvaluationResult evaluation =
+                    objectMapper.readValue(
+                            response,
+                            EvaluationResult.class
+                    );
+
+            question.setAnswer(request.getAnswer());
+            question.setScore(evaluation.score());
+            question.setFeedback(evaluation.feedback());
+
+            interviewQuestionRepository.save(question);
+
+
+            int nextQuestionNumber =
+                    request.getQuestionNumber() + 1;
+
+            if (nextQuestionNumber <= interview.getTotalQuestions()) {
+
+                InterviewQuestion nextQuestion =
+                        InterviewQuestion.builder()
+                                .questionNumber(nextQuestionNumber)
+                                .question(evaluation.nextQuestion())
+                                .interview(interview)
+                                .build();
+
+                interviewQuestionRepository.save(nextQuestion);
+
+                interview.setCurrentQuestion(
+                        nextQuestionNumber
+                );
+
+                interviewRepository.save(interview);
+
+            } else {
+
+                interview.setStatus(
+                        InterviewStatus.COMPLETED
+                );
+
+                interview.setCompletedAt(
+                        java.time.LocalDateTime.now()
+                );
+
+                interviewRepository.save(interview);
+            }
+
+            return InterviewEvaluationResponse.builder()
+                    .interviewId(interview.getId())
+                    .questionNumber(
+                            request.getQuestionNumber()
+                    )
+                    .score(evaluation.score())
+                    .feedback(evaluation.feedback())
+                    .nextQuestion(
+                            nextQuestionNumber <= interview.getTotalQuestions()
+                                    ? evaluation.nextQuestion()
+                                    : null
+                    )
+                    .build();
+
+        } catch (Exception e) {
+
+            throw new RuntimeException(
+                    "Failed to evaluate interview answer",
+                    e
+            );
+        }
+    }
+
+    private record EvaluationResult(
+            int score,
+            String feedback,
+            String nextQuestion
+    ) {
     }
 }

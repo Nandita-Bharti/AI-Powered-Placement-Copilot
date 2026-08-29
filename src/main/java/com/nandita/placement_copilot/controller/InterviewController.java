@@ -1,5 +1,7 @@
 package com.nandita.placement_copilot.controller;
 
+import com.nandita.placement_copilot.dto.InterviewAnswerRequest;
+import com.nandita.placement_copilot.dto.InterviewEvaluationResponse;
 import com.nandita.placement_copilot.dto.InterviewQuestionResponse;
 import com.nandita.placement_copilot.dto.InterviewStartRequest;
 import com.nandita.placement_copilot.entity.User;
@@ -31,6 +33,26 @@ public class InterviewController {
 
         InterviewQuestionResponse response =
                 interviewService.startInterview(
+                        user.getId(),
+                        request
+                );
+
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/answer")
+    public ResponseEntity<InterviewEvaluationResponse> submitAnswer(
+            @RequestBody InterviewAnswerRequest request,
+            Authentication authentication) {
+
+        String email = authentication.getName();
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() ->
+                        new RuntimeException("User not found"));
+
+        InterviewEvaluationResponse response =
+                interviewService.submitAnswer(
                         user.getId(),
                         request
                 );
