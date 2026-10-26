@@ -1,0 +1,440 @@
+.job-matcher-page {
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 34px 36px 60px;
+}
+
+/* =====================================
+   PAGE HEADER
+====================================== */
+
+.job-matcher-page .page-header {
+  margin-bottom: 28px;
+}
+
+.job-matcher-page .page-eyebrow {
+  margin: 0 0 7px;
+  color: var(--accent);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+}
+
+.job-matcher-page .page-header h1 {
+  margin: 0;
+  color: var(--text-primary);
+  font-size: 28px;
+  font-weight: 650;
+  letter-spacing: -0.03em;
+}
+
+.job-matcher-page .page-subtitle {
+  max-width: 620px;
+  margin: 9px 0 0;
+  color: var(--text-secondary);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+
+/* =====================================
+   JOB INPUT CARD
+====================================== */
+
+.job-input-card {
+  padding: 22px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--bg-card);
+  box-shadow: var(--shadow-card);
+}
+
+.job-input-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.job-input-icon {
+  width: 38px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border: 1px solid rgba(18, 201, 138, 0.16);
+  border-radius: 9px;
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.job-input-header h3 {
+  margin: 0;
+  color: var(--text-primary);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.job-input-header p {
+  margin: 4px 0 0;
+  color: var(--text-muted);
+  font-size: 11px;
+}
+
+.job-description-input {
+  width: 100%;
+  min-height: 190px;
+  resize: vertical;
+  padding: 15px;
+  border: 1px solid var(--border-light);
+  border-radius: 10px;
+  outline: none;
+  background: #0b1117;
+  color: var(--text-primary);
+  font-size: 12px;
+  line-height: 1.65;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.job-description-input::placeholder {
+  color: #5f6b76;
+}
+
+.job-description-input:focus {
+  border-color: rgba(18, 201, 138, 0.45);
+  box-shadow: 0 0 0 3px rgba(18, 201, 138, 0.06);
+}
+
+.job-input-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 13px;
+}
+
+.job-input-footer > span {
+  color: var(--text-muted);
+  font-size: 10px;
+}
+
+.match-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border: 1px solid rgba(18, 201, 138, 0.35);
+  border-radius: 9px;
+  background: var(--accent);
+  color: #07110d;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.match-button:hover:not(:disabled) {
+  background: var(--accent-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 8px 24px rgba(18, 201, 138, 0.18);
+}
+
+.match-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.job-match-error {
+  margin-top: 12px;
+  padding: 9px 11px;
+  border: 1px solid rgba(255, 119, 119, 0.18);
+  border-radius: 8px;
+  background: rgba(255, 119, 119, 0.05);
+  color: #ff9999;
+  font-size: 11px;
+}
+
+
+/* =====================================
+   RESULTS
+====================================== */
+
+.job-match-results {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-top: 20px;
+}
+
+
+/* =====================================
+   MATCH SCORE
+====================================== */
+
+.match-score-card {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background:
+    linear-gradient(
+      135deg,
+      rgba(18, 201, 138, 0.07),
+      transparent 55%
+    ),
+    var(--bg-card);
+}
+
+.match-score-card .analysis-eyebrow {
+  margin: 0 0 5px;
+  color: var(--accent);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.13em;
+}
+
+.match-score-card h2 {
+  margin: 0;
+  color: var(--text-primary);
+  font-size: 42px;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+}
+
+.match-score-card p:last-child {
+  margin: 5px 0 0;
+  color: var(--text-secondary);
+  font-size: 11px;
+}
+
+.match-score-ring {
+  width: 72px;
+  height: 72px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(18, 201, 138, 0.25);
+  border-radius: 50%;
+  background: rgba(18, 201, 138, 0.07);
+  color: var(--accent);
+}
+
+
+/* =====================================
+   RESULT CARDS
+====================================== */
+
+.job-result-card {
+  min-height: 190px;
+  padding: 20px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--bg-card);
+}
+
+.job-result-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 18px;
+}
+
+.job-result-header .analysis-eyebrow {
+  margin: 0 0 5px;
+  color: var(--text-muted);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.13em;
+}
+
+.job-result-header h3 {
+  margin: 0;
+  color: var(--text-primary);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.job-result-header > svg {
+  color: var(--accent);
+}
+
+
+/* =====================================
+   SKILLS
+====================================== */
+
+.job-result-card .skill-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.job-result-card .skill-tags span {
+  padding: 6px 9px;
+  border: 1px solid rgba(18, 201, 138, 0.16);
+  border-radius: 7px;
+  background: rgba(18, 201, 138, 0.06);
+  color: #a8e6ce;
+  font-size: 10px;
+}
+
+
+/* =====================================
+   MISSING SKILLS
+====================================== */
+
+.job-result-card .missing-skills {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.job-result-card .missing-skills > div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  background: #0d141b;
+  color: var(--text-secondary);
+  font-size: 10px;
+}
+
+.job-result-card .missing-skills svg {
+  color: var(--warning);
+}
+
+
+/* =====================================
+   RECOMMENDATIONS
+====================================== */
+
+.job-matcher-page .recommendations-card {
+  grid-column: 1 / -1;
+  padding: 20px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--bg-card);
+}
+
+.job-matcher-page .recommendations-header {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  margin-bottom: 20px;
+}
+
+.job-matcher-page .recommendation-icon {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(18, 201, 138, 0.15);
+  border-radius: 8px;
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.job-matcher-page .analysis-eyebrow {
+  margin: 0 0 4px;
+  color: var(--accent);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.13em;
+}
+
+.job-matcher-page .recommendations-header h3 {
+  margin: 0;
+  color: var(--text-primary);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.job-matcher-page .recommendation-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.job-matcher-page .recommendation-item {
+  display: flex;
+  gap: 13px;
+  padding: 14px 0;
+  border-top: 1px solid var(--border);
+}
+
+.job-matcher-page .recommendation-number {
+  flex-shrink: 0;
+  color: var(--accent);
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.job-matcher-page .recommendation-item strong {
+  display: block;
+  color: #dce3e8;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.job-matcher-page .recommendation-item p {
+  margin: 5px 0 0;
+  color: var(--text-secondary);
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+
+/* =====================================
+   RESPONSIVE
+====================================== */
+
+@media (max-width: 800px) {
+
+  .job-matcher-page {
+    padding: 25px 20px 45px;
+  }
+
+  .job-match-results {
+    grid-template-columns: 1fr;
+  }
+
+  .match-score-card,
+  .job-matcher-page .recommendations-card {
+    grid-column: auto;
+  }
+
+}
+
+@media (max-width: 520px) {
+
+  .job-matcher-page {
+    padding: 20px 14px 35px;
+  }
+
+  .job-input-card {
+    padding: 16px;
+  }
+
+  .job-input-footer {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .match-button {
+    width: 100%;
+  }
+
+}

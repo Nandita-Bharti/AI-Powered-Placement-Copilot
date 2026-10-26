@@ -1,6 +1,7 @@
 package com.nandita.placement_copilot.controller;
 
 import com.nandita.placement_copilot.dto.*;
+import com.nandita.placement_copilot.dto.InterviewHistoryResponse;
 import com.nandita.placement_copilot.entity.User;
 import com.nandita.placement_copilot.repository.UserRepository;
 import com.nandita.placement_copilot.service.InterviewService;
@@ -8,6 +9,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/interview")
@@ -75,5 +78,21 @@ public class InterviewController {
                 );
 
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/history")
+    public ResponseEntity<List<InterviewHistoryResponse>> getInterviewHistory(
+            Authentication authentication) {
+
+        String email = authentication.getName();
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() ->
+                        new RuntimeException("User not found"));
+
+        List<InterviewHistoryResponse> history =
+                interviewService.getInterviewHistory(user.getId());
+
+        return ResponseEntity.ok(history);
     }
 }

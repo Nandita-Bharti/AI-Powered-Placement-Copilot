@@ -57,7 +57,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             UserDetails userDetails =
                     userDetailsService.loadUserByUsername(email);
 
-            if (jwtService.isTokenValid(jwt, userDetails.getUsername())) {
+            boolean valid = jwtService.isTokenValid(
+                    jwt,
+                    userDetails.getUsername()
+            );
+
+            System.out.println("JWT email: " + email);
+            System.out.println("User email: " + userDetails.getUsername());
+            System.out.println("JWT valid: " + valid);
+
+            if (valid) {
 
                 UsernamePasswordAuthenticationToken authentication =
                         new UsernamePasswordAuthenticationToken(
@@ -74,6 +83,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 SecurityContextHolder
                         .getContext()
                         .setAuthentication(authentication);
+
+                System.out.println("Authentication set successfully.");
             }
         }
 

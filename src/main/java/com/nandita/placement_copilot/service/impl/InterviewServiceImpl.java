@@ -1,5 +1,6 @@
 package com.nandita.placement_copilot.service.impl;
 
+import com.nandita.placement_copilot.dto.InterviewHistoryResponse;
 import com.nandita.placement_copilot.dto.*;
 import com.nandita.placement_copilot.entity.Interview;
 import com.nandita.placement_copilot.entity.InterviewStatus;
@@ -13,6 +14,7 @@ import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.LocalDateTime;
+import java.util.List;
 
 import com.nandita.placement_copilot.entity.InterviewQuestion;
 
@@ -320,6 +322,93 @@ public class InterviewServiceImpl implements InterviewService {
                 ? 0.0
                 : (double) totalScore / answeredQuestions;
 
+        StringBuilder interviewSummary = new StringBuilder();
+
+        for (InterviewQuestion question : questions) {
+
+            interviewSummary.append("""
+            Question: %s
+            Answer: %s
+            Score: %d/10
+            Feedback: %s
+
+            """.formatted(
+                    question.getQuestion(),
+                    question.getAnswer(),
+                    question.getScore(),
+                    question.getFeedback()
+            ));
+        }
+
+        String prompt = """
+        You are an expert placement interview coach.
+
+        Analyze the following technical interview performance.
+
+        Interview Type:
+        %s
+
+        Average Score:
+        %.2f / 10
+
+        Interview Details:
+        %s
+
+        Provide exactly 3 personalized recommendations
+        to help the candidate improve.
+
+        Focus on:
+        - Technical knowledge
+        - Answer quality
+        - Communication
+        - Weak areas
+
+        Return ONLY valid JSON:
+
+        {
+          "recommendations": [
+            "recommendation 1",
+            "recommendation 2",
+            "recommendation 3"
+          ]
+        }
+
+        Do not use markdown.
+        """.formatted(
+                interview.getInterviewType(),
+                averageScore,
+                interviewSummary
+        );
+
+        ChatClient chatClient =
+                chatClientBuilder.build();
+
+        String aiResponse = chatClient
+                .prompt(prompt)
+                .call()
+                .content();
+
+        ObjectMapper objectMapper =
+                new ObjectMapper();
+
+        RecommendationResult recommendationResult;
+
+        try {
+
+            recommendationResult =
+                    objectMapper.readValue(
+                            aiResponse,
+                            RecommendationResult.class
+                    );
+
+        } catch (Exception e) {
+
+            throw new RuntimeException(
+                    "Failed to generate recommendations",
+                    e
+            );
+        }
+
         return InterviewResultResponse.builder()
                 .interviewId(interview.getId())
                 .interviewType(interview.getInterviewType())
@@ -330,7 +419,46 @@ public class InterviewServiceImpl implements InterviewService {
                         Math.round(averageScore * 100.0) / 100.0
                 )
                 .status(interview.getStatus().name())
-                .recommendations(java.util.List.of())
+                .recommendations(
+                        recommendationResult.recommendations()
+                )
                 .build();
+    }
+
+    private record RecommendationResult(
+            java.util.List<String> recommendations
+    ) {
+    }
+
+    @Override
+    public List<InterviewHistoryResponse> getInterviewHistory(Long userId) {
+
+        List<Interview> interviews =
+                interviewRepository
+                        .findByUserIdOrderByStartedAtDesc(userId);
+
+        return interviews.stream()
+                .map(interview -> InterviewHistoryResponse.builder()
+                        .id(interview.getId())
+                        .interviewType(
+                                interview.getInterviewType()
+                        )
+                        .totalQuestions(
+                                interview.getTotalQuestions()
+                        )
+                        .currentQuestion(
+                                interview.getCurrentQuestion()
+                        )
+                        .startedAt(
+                                interview.getStartedAt()
+                        )
+                        .completedAt(
+                                interview.getCompletedAt()
+                        )
+                        .status(
+                                interview.getStatus().name()
+                        )
+                        .build())
+                .toList();
     }
 }

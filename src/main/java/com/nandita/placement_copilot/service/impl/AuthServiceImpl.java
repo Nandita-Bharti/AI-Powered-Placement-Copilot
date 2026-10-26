@@ -21,8 +21,9 @@ public class AuthServiceImpl implements AuthService {
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
 
+
     @Override
-    public void register(RegisterRequest request) {
+    public String register(RegisterRequest request) {
 
         if (userRepository.existsByEmail(request.getEmail())) {
             throw new RuntimeException("Email already registered");
@@ -35,8 +36,11 @@ public class AuthServiceImpl implements AuthService {
                 .role("STUDENT")
                 .build();
 
-        userRepository.save(user);
+        User savedUser = userRepository.save(user);
+
+        return jwtService.generateToken(savedUser.getEmail());
     }
+
 
     @Override
     public String login(LoginRequest request) {

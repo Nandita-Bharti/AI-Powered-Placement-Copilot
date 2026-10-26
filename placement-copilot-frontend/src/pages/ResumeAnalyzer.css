@@ -1,0 +1,763 @@
+/* =========================================
+   RESUME ANALYZER PAGE
+========================================= */
+
+.resume-page {
+  width: 100%;
+  min-height: calc(100vh - 72px);
+
+  padding: 34px 36px 50px;
+
+  background: #080c11;
+}
+
+
+/* =========================================
+   PAGE HEADER
+========================================= */
+
+.page-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+
+  gap: 30px;
+
+  margin-bottom: 30px;
+}
+
+.page-eyebrow {
+  margin: 0 0 9px;
+
+  color: #64707d;
+
+  font-size: 10px;
+  font-weight: 700;
+
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+}
+
+.page-header h1 {
+  margin: 0;
+
+  color: #f1f4f6;
+
+  font-size: 30px;
+  font-weight: 650;
+
+  letter-spacing: -1px;
+}
+
+.page-subtitle {
+  max-width: 650px;
+
+  margin: 9px 0 0;
+
+  color: #727e8c;
+
+  font-size: 13px;
+
+  line-height: 1.6;
+}
+
+
+/* AI Badge */
+
+.ai-badge {
+  display: flex;
+  align-items: center;
+
+  gap: 7px;
+
+  padding: 8px 11px;
+
+  border: 1px solid rgba(145, 116, 255, 0.2);
+  border-radius: 8px;
+
+  background: rgba(145, 116, 255, 0.08);
+
+  color: #a18aff;
+
+  font-size: 11px;
+  font-weight: 600;
+
+  white-space: nowrap;
+}
+
+
+/* =========================================
+   UPLOAD CARD
+========================================= */
+
+.resume-upload-card {
+  min-height: 260px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  padding: 35px;
+
+  text-align: center;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(18, 201, 138, 0.025),
+      rgba(13, 18, 24, 0)
+    ),
+    #0d1218;
+
+  border: 1px dashed #2b3944;
+  border-radius: 14px;
+
+  transition:
+    border-color 0.25s ease,
+    background 0.25s ease,
+    transform 0.25s ease;
+}
+
+.resume-upload-card:hover {
+  border-color: rgba(18, 201, 138, 0.55);
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(18, 201, 138, 0.05),
+      rgba(13, 18, 24, 0)
+    ),
+    #0e151b;
+}
+
+
+/* Upload icon */
+
+.upload-icon {
+  width: 54px;
+  height: 54px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  margin-bottom: 16px;
+
+  border-radius: 14px;
+
+  background: rgba(18, 201, 138, 0.1);
+
+  color: #12c98a;
+
+  box-shadow:
+    0 0 25px rgba(18, 201, 138, 0.06);
+}
+
+.resume-upload-card h2 {
+  margin: 0 0 8px;
+
+  color: #e9eef2;
+
+  font-size: 18px;
+  font-weight: 600;
+
+  letter-spacing: -0.3px;
+}
+
+.resume-upload-card > p {
+  max-width: 520px;
+
+  margin: 0 0 20px;
+
+  color: #6e7a87;
+
+  font-size: 12px;
+
+  line-height: 1.6;
+}
+
+
+/* Upload button */
+
+.upload-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 8px;
+
+  padding: 10px 17px;
+
+  border-radius: 9px;
+
+  background: #12c98a;
+
+  color: #06140e;
+
+  font-size: 12px;
+  font-weight: 650;
+
+  box-shadow:
+    0 6px 20px rgba(18, 201, 138, 0.12);
+
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.upload-button:hover {
+  background: #18d596;
+
+  transform: translateY(-1px);
+
+  box-shadow:
+    0 8px 24px rgba(18, 201, 138, 0.2);
+}
+
+.upload-hint {
+  margin-top: 11px;
+
+  color: #505c68;
+
+  font-size: 10px;
+}
+
+
+/* =========================================
+   ANALYSIS GRID
+========================================= */
+
+.resume-analysis-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(3, minmax(0, 1fr));
+
+  gap: 15px;
+
+  margin-top: 16px;
+}
+
+.analysis-card {
+  min-width: 0;
+
+  min-height: 205px;
+
+  padding: 21px;
+
+  background: #0d1218;
+
+  border: 1px solid #1d252e;
+  border-radius: 13px;
+
+  transition:
+    border-color 0.2s ease,
+    transform 0.2s ease,
+    background 0.2s ease;
+}
+
+.analysis-card:hover {
+  background: #0f151c;
+
+  border-color: #29343f;
+
+  transform: translateY(-2px);
+}
+
+
+/* =========================================
+   ANALYSIS CARD HEADER
+========================================= */
+
+.analysis-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+
+  margin-bottom: 24px;
+}
+
+.analysis-card-header > svg {
+  color: #64717e;
+}
+
+.ats-card .analysis-card-header > svg {
+  color: #12c98a;
+}
+
+.analysis-card:nth-child(2)
+.analysis-card-header > svg {
+  color: #12c98a;
+}
+
+.analysis-card:nth-child(3)
+.analysis-card-header > svg {
+  color: #f49d44;
+}
+
+.analysis-eyebrow {
+  margin: 0 0 6px;
+
+  color: #596572;
+
+  font-size: 9px;
+  font-weight: 700;
+
+  letter-spacing: 1.3px;
+}
+
+.analysis-card h3 {
+  margin: 0;
+
+  color: #e4e9ed;
+
+  font-size: 15px;
+  font-weight: 600;
+}
+
+
+/* =========================================
+   ATS SCORE
+========================================= */
+
+.ats-score {
+  display: flex;
+  align-items: baseline;
+
+  gap: 5px;
+
+  margin-bottom: 13px;
+}
+
+.ats-score strong {
+  color: #edf2f5;
+
+  font-size: 40px;
+  font-weight: 650;
+
+  line-height: 1;
+
+  letter-spacing: -1.5px;
+}
+
+.ats-score span {
+  color: #5e6a76;
+
+  font-size: 12px;
+}
+
+.analysis-progress {
+  width: 100%;
+  height: 6px;
+
+  overflow: hidden;
+
+  border-radius: 999px;
+
+  background: #19212a;
+}
+
+.analysis-progress-fill {
+  height: 100%;
+
+  border-radius: inherit;
+
+  background: linear-gradient(
+    90deg,
+    #0fbf82,
+    #16d997
+  );
+
+  box-shadow:
+    0 0 8px rgba(18, 201, 138, 0.25);
+
+  transition:
+    width 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.analysis-description {
+  margin: 14px 0 0;
+
+  color: #687582;
+
+  font-size: 11px;
+}
+
+
+/* =========================================
+   SKILL TAGS
+========================================= */
+
+.skill-tags {
+  display: flex;
+  flex-wrap: wrap;
+
+  gap: 8px;
+}
+
+.skill-tags span {
+  padding: 7px 9px;
+
+  border: 1px solid #26313b;
+  border-radius: 7px;
+
+  background: #111820;
+
+  color: #aeb8c1;
+
+  font-size: 10px;
+  font-weight: 500;
+
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease,
+    color 0.2s ease;
+}
+
+.skill-tags span:hover {
+  border-color: rgba(18, 201, 138, 0.35);
+
+  background: rgba(18, 201, 138, 0.07);
+
+  color: #d7e0e5;
+}
+
+
+/* =========================================
+   MISSING SKILLS
+========================================= */
+
+.missing-skills {
+  display: flex;
+  flex-direction: column;
+
+  gap: 9px;
+}
+
+.missing-skills > div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 9px 10px;
+
+  border: 1px solid #202a34;
+  border-radius: 8px;
+
+  background: #11171e;
+
+  color: #b1bbc4;
+
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.missing-skills > div:hover {
+  background: #151d25;
+
+  border-color: #303d49;
+}
+
+.missing-skills span {
+  font-size: 11px;
+}
+
+.missing-skills svg {
+  color: #697582;
+}
+
+
+/* =========================================
+   AI RECOMMENDATIONS
+========================================= */
+
+.recommendations-card {
+  margin-top: 16px;
+
+  padding: 23px;
+
+  background: #0d1218;
+
+  border: 1px solid #1d252e;
+  border-radius: 13px;
+}
+
+.recommendations-header {
+  display: flex;
+  align-items: center;
+
+  gap: 12px;
+
+  padding-bottom: 20px;
+
+  border-bottom: 1px solid #1b232c;
+}
+
+.recommendation-icon {
+  width: 36px;
+  height: 36px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+
+  border-radius: 9px;
+
+  background: rgba(145, 116, 255, 0.12);
+
+  color: #a18aff;
+}
+
+.recommendations-header h3 {
+  margin: 0;
+
+  color: #e5eaee;
+
+  font-size: 15px;
+  font-weight: 600;
+}
+
+
+/* Recommendation list */
+
+.recommendation-list {
+  display: grid;
+
+  grid-template-columns:
+    repeat(3, minmax(0, 1fr));
+
+  gap: 0;
+}
+
+.recommendation-item {
+  display: flex;
+
+  gap: 13px;
+
+  padding: 20px 20px 5px 0;
+}
+
+.recommendation-item + .recommendation-item {
+  padding-left: 20px;
+
+  border-left: 1px solid #1b232c;
+}
+
+.recommendation-number {
+  width: 29px;
+  height: 29px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+
+  border-radius: 7px;
+
+  background: #151c24;
+
+  color: #697582;
+
+  font-size: 9px;
+  font-weight: 700;
+}
+
+.recommendation-item strong {
+  display: block;
+
+  color: #dce3e8;
+
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.recommendation-item p {
+  margin-top: 5px;
+
+  color: #66727e;
+
+  font-size: 12px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+
+@media (max-width: 1100px) {
+
+  .resume-page {
+    padding: 28px 24px 40px;
+  }
+
+  .resume-analysis-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .recommendation-list {
+    grid-template-columns: 1fr;
+  }
+
+  .recommendation-item + .recommendation-item {
+    padding-left: 0;
+
+    border-left: none;
+
+    border-top: 1px solid #1b232c;
+  }
+}
+
+
+@media (max-width: 800px) {
+
+  .page-header {
+    align-items: flex-start;
+
+    flex-direction: column;
+  }
+
+  .resume-analysis-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+@media (max-width: 520px) {
+
+  .resume-page {
+    padding: 22px 14px 30px;
+  }
+
+  .page-header h1 {
+    font-size: 25px;
+  }
+
+  .resume-upload-card {
+    min-height: 240px;
+
+    padding: 25px 18px;
+  }
+
+  .recommendations-card {
+    padding: 18px;
+  }
+}
+
+/* =========================================
+   SELECTED RESUME
+========================================= */
+
+.selected-file-wrapper {
+  width: min(480px, 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+
+.analyze-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 11px 18px;
+  border: 1px solid rgba(18, 201, 138, 0.35);
+  border-radius: 9px;
+  background: #12c98a;
+  color: #07110d;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    transform 0.2s ease,
+    background 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.analyze-button:hover {
+  background: #18d998;
+  transform: translateY(-1px);
+  box-shadow: 0 8px 24px rgba(18, 201, 138, 0.18);
+}
+
+.selected-file-icon {
+  width: 34px;
+  height: 34px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+
+  border-radius: 8px;
+
+  background: rgba(18, 201, 138, 0.1);
+
+  color: #12c98a;
+}
+
+.selected-file-info {
+  min-width: 0;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 3px;
+
+  flex: 1;
+}
+
+.selected-file-info strong {
+  overflow: hidden;
+
+  color: #dce3e8;
+
+  font-size: 11px;
+  font-weight: 600;
+
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.selected-file-info span {
+  color: #66727e;
+
+  font-size: 10px;
+}
+
+.remove-file-button {
+  width: 30px;
+  height: 30px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+
+  border: 1px solid #29333d;
+  border-radius: 7px;
+
+  background: transparent;
+
+  color: #687582;
+
+  transition:
+    background 0.2s ease,
+    color 0.2s ease;
+}
+
+.remove-file-button:hover {
+  background: rgba(255, 80, 80, 0.08);
+
+  color: #ff7777;
+}

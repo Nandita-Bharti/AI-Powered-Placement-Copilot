@@ -42,6 +42,7 @@ public class StudentProfileServiceImpl implements StudentProfileService {
 
         studentProfileRepository.save(profile);
     }
+
     @Override
     public StudentProfileResponse getProfile(Long userId) {
 
@@ -50,8 +51,13 @@ public class StudentProfileServiceImpl implements StudentProfileService {
                 .orElseThrow(() ->
                         new RuntimeException("Student profile not found"));
 
+        User user = userRepository.findById(userId)
+                .orElseThrow(() ->
+                        new RuntimeException("User not found"));
+
         return StudentProfileResponse.builder()
                 .id(profile.getId())
+                .name(user.getName())
                 .phone(profile.getPhone())
                 .college(profile.getCollege())
                 .degree(profile.getDegree())
@@ -60,4 +66,5 @@ public class StudentProfileServiceImpl implements StudentProfileService {
                 .skills(profile.getSkills())
                 .build();
     }
+
 }

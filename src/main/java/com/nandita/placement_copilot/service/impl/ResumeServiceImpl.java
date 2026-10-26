@@ -34,8 +34,13 @@ public class ResumeServiceImpl implements ResumeService {
             throw new RuntimeException("Resume file is empty");
         }
 
-        if (!"application/pdf".equalsIgnoreCase(file.getContentType())) {
-            throw new RuntimeException("Only PDF files are allowed");
+        String contentType = file.getContentType();
+
+        if (!"application/pdf".equalsIgnoreCase(contentType)
+                && !"application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                .equalsIgnoreCase(contentType)) {
+
+            throw new RuntimeException("Only PDF and DOCX files are allowed");
         }
 
         User user = userRepository.findById(userId)
