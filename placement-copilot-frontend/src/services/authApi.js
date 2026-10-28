@@ -52,3 +52,22 @@ export function logoutUser() {
 export function isAuthenticated() {
   return !!localStorage.getItem("token");
 }
+
+export async function getCurrentUser() {
+  const token = getToken();
+
+  if (!token) return null;
+
+  const response = await fetch(`${API_BASE_URL}/api/profile`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error("Unable to load your profile.");
+  }
+
+  return response.json();
+}
+

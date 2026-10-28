@@ -218,7 +218,7 @@
   display: flex;
   align-items: baseline;
 
-  gap: 4px;
+  gap: 5px;
 }
 
 .stat-value-row h2 {
@@ -226,7 +226,7 @@
 
   color: #edf1f4;
 
-  font-size: 28px;
+  font-size: 30px;
   font-weight: 650;
 
   letter-spacing: -0.8px;
@@ -235,7 +235,7 @@
 .stat-value-row span {
   color: #5f6a77;
 
-  font-size: 11px;
+  font-size: 16px;
 }
 
 /* =========================================
@@ -528,7 +528,7 @@
 .score-circle span {
   color: #687482;
 
-  font-size: 11px;
+  font-size: 13px;
 }
 
 .score-title {
@@ -536,7 +536,7 @@
 
   color: #dce2e7;
 
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 600;
 }
 
@@ -652,7 +652,7 @@
 .ai-card-header > span {
   color: #8b7aff;
 
-  font-size: 9px;
+  font-size: 10px;
   font-weight: 700;
 
   letter-spacing: 1.4px;
@@ -663,7 +663,7 @@
 
   color: #e9edf1;
 
-  font-size: 17px;
+  font-size: 18px;
   font-weight: 600;
 }
 
@@ -704,7 +704,7 @@
 
   color: #65717e;
 
-  font-size: 9px;
+  font-size: 12px;
   font-weight: 700;
 }
 
@@ -720,14 +720,14 @@
 .ai-recommendation strong {
   color: #dce2e7;
 
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 600;
 }
 
 .ai-recommendation span {
   color: #66727f;
 
-  font-size: 10px;
+  font-size: 12px;
 }
 
 .secondary-button {

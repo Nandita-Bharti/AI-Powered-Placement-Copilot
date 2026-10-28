@@ -15,7 +15,6 @@ import {
   getStudyPlanHistory,
 } from "../services/studyPlanApi";
 import { getToken } from "../services/authApi";
-
 import "./StudyPlanner.css";
 
 function StudyPlanner() {
@@ -30,31 +29,35 @@ function StudyPlanner() {
   const [historyError, setHistoryError] = useState("");
   const [historyLoaded, setHistoryLoaded] = useState(false);
 
-  const handleGeneratePlan = async () => {
-    try {
-      setLoading(true);
-      setError("");
-      setStudyPlan(null);
 
-      const token = getToken();
+const handleGeneratePlan = async () => {
+  try {
+    setLoading(true);
+    setError("");
+    setStudyPlan(null);
 
-      if (!token) {
-        throw new Error("Please log in again to continue.");
-      }
+    const token = getToken();
 
-      const result = await generateStudyPlan(
-        Number(numberOfDays),
-        Number(hoursPerDay),
-        token
-      );
-
-      setStudyPlan(result);
-    } catch (err) {
-      setError(err.message || "Unable to generate your study plan.");
-    } finally {
-      setLoading(false);
+    if (!token) {
+      throw new Error("Please log in again to continue.");
     }
-  };
+
+    const request = {
+      numberOfDays: Number(numberOfDays),
+      hoursPerDay: Number(hoursPerDay),
+    };
+
+    const result = await generateStudyPlan(request, token);
+
+    setStudyPlan(result);
+  } catch (err) {
+    console.error("Study plan generation failed:", err);
+    setError(err.message || "Unable to generate your study plan.");
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   const handleLoadHistory = async () => {
     try {
@@ -76,6 +79,7 @@ function StudyPlanner() {
       setHistoryLoading(false);
     }
   };
+
 
   return (
     <div className="study-planner-page">

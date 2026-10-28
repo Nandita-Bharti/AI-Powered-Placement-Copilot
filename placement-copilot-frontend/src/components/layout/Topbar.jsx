@@ -3,7 +3,10 @@ import {
   Search,
   ChevronDown,
 } from "lucide-react";
+const user = JSON.parse(localStorage.getItem("user") || "{}");
 
+const userName = user.name || user.fullName || user.username || "User";
+const userRole = user.role || "Student";
 function Topbar() {
   return (
     <header className="topbar">
@@ -30,12 +33,12 @@ function Topbar() {
         <div className="topbar-profile">
 
           <div className="topbar-avatar">
-            N
+            <span>{userName.charAt(0).toUpperCase()}</span>
           </div>
 
           <div className="topbar-user">
-            <strong>Nandita</strong>
-            <span>Student</span>
+            <strong>{userName}</strong>
+            <span>{userRole}</span>
           </div>
 
           <ChevronDown size={16} />

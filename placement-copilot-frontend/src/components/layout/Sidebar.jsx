@@ -8,6 +8,8 @@ import {
   Settings,
   Sparkles,
 } from "lucide-react";
+import { useEffect, useState } from "react";
+import { getCurrentUser } from "../../services/authApi";
 
 const menuItems = [
   {
@@ -36,8 +38,23 @@ const menuItems = [
   },
 ];
 
-function Sidebar({ currentPage, setCurrentPage , onLogout}) {
+
+function Sidebar({ currentPage, setCurrentPage, onLogout }) {
+  const [profile, setProfile] = useState(null);
+
+  useEffect(() => {
+    getCurrentUser()
+      .then((data) => setProfile(data))
+      .catch((error) => {
+        console.error("Profile loading failed:", error);
+      });
+  }, []);
+
+  const userName = profile?.name || "User";
+  const userRole = profile?.targetRole || "Student";
+
   return (
+
     <aside className="sidebar">
 
       {/* Logo */}
@@ -86,12 +103,12 @@ function Sidebar({ currentPage, setCurrentPage , onLogout}) {
         <div className="sidebar-profile">
 
           <div className="avatar">
-            N
+            <span>{userName.charAt(0).toUpperCase()}</span>
           </div>
 
           <div className="profile-info">
-            <strong>Nandita</strong>
-            <span>Student</span>
+            <strong>{userName}</strong>
+            <span>{userRole}</span>
           </div>
 
           <span className="profile-dot"></span>

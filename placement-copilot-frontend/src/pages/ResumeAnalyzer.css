@@ -518,7 +518,7 @@
 
   color: #e5eaee;
 
-  font-size: 15px;
+  font-size: 18px;
   font-weight: 600;
 }
 
@@ -564,7 +564,7 @@
 
   color: #697582;
 
-  font-size: 9px;
+  font-size: 14px;
   font-weight: 700;
 }
 
@@ -573,7 +573,7 @@
 
   color: #dce3e8;
 
-  font-size: 13px;
+  font-size: 16px;
   font-weight: 600;
 }
 
@@ -630,14 +630,14 @@
 }
 
 
-@media (max-width: 520px) {
+@media (max-width: 720px) {
 
   .resume-page {
     padding: 22px 14px 30px;
   }
 
   .page-header h1 {
-    font-size: 25px;
+    font-size: 30px;
   }
 
   .resume-upload-card {

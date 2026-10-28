@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useRef, useState , useEffect } from "react";
 import "./ResumeAnalyzer.css";
 import { uploadResume, analyzeResume } from "../services/resumeApi";
 import { getToken } from "../services/authApi";
@@ -11,16 +11,36 @@ import {
   ArrowUpRight,
   X,
 } from "lucide-react";
+import { getSavedAnalysis } from "../services/resumeApi";
 
 function ResumeAnalyzer() {
 
-  const fileInputRef = useRef(null);
+const fileInputRef = useRef(null);
 
 const [selectedFile, setSelectedFile] = useState(null);
 const [analyzing, setAnalyzing] = useState(false);
 const [analysisError, setAnalysisError] = useState("");
 const [analysis, setAnalysis] = useState(null);
 
+useEffect(() => {
+  const loadSavedAnalysis = async () => {
+    try {
+      const token = getToken();
+
+      if (!token) return;
+
+      const result = await getSavedAnalysis(token);
+
+      if (result) {
+        setAnalysis(result);
+      }
+    } catch (error) {
+      console.log("No saved resume analysis found:", error.message);
+    }
+  };
+
+  loadSavedAnalysis();
+}, []);
 
   const handleUploadClick = () => {
     fileInputRef.current?.click();
@@ -49,6 +69,8 @@ const [analysis, setAnalysis] = useState(null);
     }
 
     setSelectedFile(file);
+    setAnalysis(null);
+    setAnalysisError("");
   };
 
 
@@ -249,7 +271,7 @@ const handleAnalyze = async () => {
           </div>
 
           <div className="ats-score">
-            <strong>{analysis ? analysis.atsScore : "--"}</strong>
+            <strong>{analysis?.atsScore ?? "--"}</strong>
             <span>/ 100</span>
           </div>
 
@@ -257,13 +279,17 @@ const handleAnalyze = async () => {
 
             <div
               className="analysis-progress-fill"
-              style={{ width: "82%" }}
+              style={{
+                width: `${analysis?.atsScore ?? 0}%`,
+              }}
             />
 
           </div>
 
           <p className="analysis-description">
-            Your resume has strong ATS compatibility.
+            {analysis
+              ? "Your resume analysis is complete. Review your score and improvement areas."
+              : "Upload and analyze your resume to see your ATS compatibility score."}
           </p>
 
         </div>
@@ -292,9 +318,15 @@ const handleAnalyze = async () => {
           </div>
 
              <div className="skill-tags">
-               {(analysis?.skills || []).map((skill, index) => (
-                 <span key={index}>{skill}</span>
-               ))}
+               {analysis?.skills?.length > 0 ? (
+                 analysis.skills.map((skill, index) => (
+                   <span key={index}>{skill}</span>
+                 ))
+               ) : (
+                 <p className="analysis-description">
+                   Detected skills will appear here after analysis.
+                 </p>
+               )}
              </div>
 
         </div>
@@ -323,14 +355,20 @@ const handleAnalyze = async () => {
           </div>
 
           <div className="missing-skills">
-
-           {(analysis?.missingSkills || []).map((skill, index) => (
-               <div key={index}>
-                 <span>{skill}</span>
-                 <ArrowUpRight size={15} />
-               </div>
-             ))}
-
+            {analysis?.missingSkills?.length > 0 ? (
+              analysis.missingSkills.map((skill, index) => (
+                <div key={index}>
+                  <span>{skill}</span>
+                  <ArrowUpRight size={15} />
+                </div>
+              ))
+            ) : (
+              <p className="analysis-description">
+                {analysis
+                  ? "Great! No missing skills were identified in this analysis."
+                  : "Analyze your resume to discover skills you may need to develop for your target role."}
+              </p>
+            )}
           </div>
 
         </div>
@@ -363,34 +401,29 @@ const handleAnalyze = async () => {
         </div>
 
         <div className="recommendation-list">
+          {analysis?.suggestions?.length > 0 ? (
+            analysis.suggestions.map((suggestion, index) => (
+              <div
+                className="recommendation-item"
+                key={index}
+              >
+                <span className="recommendation-number">
+                  {String(index + 1).padStart(2, "0")}
+                </span>
 
-          {(analysis?.suggestions || []).map((suggestion, index) => (
-
-            <div
-              className="recommendation-item"
-              key={index}
-            >
-
-              <span className="recommendation-number">
-                {String(index + 1).padStart(2, "0")}
-              </span>
-
-              <div>
-
-                <strong>
-                  Recommendation {index + 1}
-                </strong>
-
-                <p>
-                  {suggestion}
-                </p>
-
+                <div>
+                  <strong>Recommendation {index + 1}</strong>
+                  <p>{suggestion}</p>
+                </div>
               </div>
-
-            </div>
-
-          ))}
-
+            ))
+          ) : (
+            <p className="analysis-description">
+              {analysis
+                ? "No recommendations are available for this analysis yet."
+                : "Upload and analyze your resume to receive personalized suggestions for improving it."}
+            </p>
+          )}
         </div>
 
       </section>

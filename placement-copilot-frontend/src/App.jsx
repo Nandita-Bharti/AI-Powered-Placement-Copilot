@@ -7,6 +7,7 @@ import JobMatcher from "./pages/JobMatcher";
 import { isAuthenticated, logoutUser } from "./services/authApi";
 import StudyPlanner from "./pages/StudyPlanner";
 import ProfileSetup from "./pages/ProfileSetup";
+import Interview from "./pages/Interview";
 
 function App() {
   const [authenticated, setAuthenticated] = useState(isAuthenticated());
@@ -36,6 +37,9 @@ function App() {
 
       case "Study Planner":
             return <StudyPlanner />;
+
+      case "Interview":
+          return <Interview />;
 
       case "Profile Setup":
         return (

@@ -42,3 +42,21 @@ export async function analyzeResume(token) {
 
   return response.json();
 }
+export async function getSavedAnalysis(token) {
+  const response = await fetch(`${API_BASE_URL}/api/resume/analysis`, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (response.status === 404) {
+    return null;
+  }
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch saved resume analysis");
+  }
+
+  return response.json();
+}
