@@ -62,7 +62,7 @@ public class SecurityConfig {
         configuration.setAllowedOrigins(
                 List.of(
                         "http://localhost:5174",
-                        "https://ai-powered-placement-copilot-fronte.vercel.app/"
+                        "https://ai-powered-placement-copilot-fronte.vercel.app"
                 )
         );
 
