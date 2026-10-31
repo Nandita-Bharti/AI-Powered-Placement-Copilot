@@ -20,7 +20,7 @@ application.yaml
 .settings/
 .project
 .classpath
-
+.env
 # React / Node / Vite
 **/node_modules/
 **/dist/
