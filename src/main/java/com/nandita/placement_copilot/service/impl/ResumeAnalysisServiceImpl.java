@@ -75,20 +75,42 @@ public class ResumeAnalysisServiceImpl implements ResumeAnalysisService {
                 .content();
 
         try {
+            ObjectMapper objectMapper = new ObjectMapper();
 
+            ResumeAnalysisResponse analysis =
+                    objectMapper.readValue(response, ResumeAnalysisResponse.class);
+
+            // Save the AI analysis in the existing Resume record
+            resume.setAnalysisResult(objectMapper.writeValueAsString(analysis));
+            resumeRepository.save(resume);
+
+            return analysis;
+
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to parse or save AI resume analysis", e);
+        }
+    }
+    @Override
+    public ResumeAnalysisResponse getSavedAnalysis(Long userId) {
+
+        Resume resume = resumeRepository.findByUserId(userId)
+                .orElseThrow(() -> new RuntimeException("Resume not found"));
+
+        if (resume.getAnalysisResult() == null
+                || resume.getAnalysisResult().isBlank()) {
+            throw new RuntimeException("Resume analysis not found");
+        }
+
+        try {
             ObjectMapper objectMapper = new ObjectMapper();
 
             return objectMapper.readValue(
-                    response,
+                    resume.getAnalysisResult(),
                     ResumeAnalysisResponse.class
             );
 
         } catch (Exception e) {
-
-            throw new RuntimeException(
-                    "Failed to parse AI resume analysis",
-                    e
-            );
+            throw new RuntimeException("Failed to retrieve saved resume analysis", e);
         }
     }
 }

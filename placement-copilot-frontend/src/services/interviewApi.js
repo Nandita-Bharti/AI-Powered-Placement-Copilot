@@ -19,10 +19,15 @@ async function request(endpoint, token, options = {}) {
   return response.json();
 }
 
-export function startInterview(interviewType, numberOfQuestions, token) {
+
+export function startInterview(interviewType, topic, numberOfQuestions, token) {
   return request("/api/interview/start", token, {
     method: "POST",
-    body: JSON.stringify({ interviewType, numberOfQuestions }),
+    body: JSON.stringify({
+      interviewType,
+      topic,
+      numberOfQuestions,
+    }),
   });
 }
 

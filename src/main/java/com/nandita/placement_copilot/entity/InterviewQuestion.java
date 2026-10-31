@@ -23,7 +23,6 @@ public class InterviewQuestion {
 
     @Column(columnDefinition = "TEXT")
     private String answer;
-
     private Integer score;
 
     @Column(columnDefinition = "TEXT")

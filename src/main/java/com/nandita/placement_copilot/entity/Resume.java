@@ -25,9 +25,15 @@ public class Resume {
     @Column(columnDefinition = "TEXT")
     private String extractedText;
 
+
+    @Column(columnDefinition = "TEXT")
+    private String analysisResult;
+
     private LocalDateTime uploadedAt;
 
     @OneToOne
     @JoinColumn(name = "user_id", nullable = false, unique = true)
     private User user;
+
+
 }

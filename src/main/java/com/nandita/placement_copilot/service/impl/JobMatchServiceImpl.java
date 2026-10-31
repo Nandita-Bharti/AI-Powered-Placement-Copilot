@@ -199,4 +199,34 @@ public class JobMatchServiceImpl implements JobMatchService {
                 })
                 .toList();
     }
+
+    @Override
+    public JobMatchHistoryResponse getLatestMatch(Long userId) {
+        JobMatchHistory history = jobMatchHistoryRepository
+                .findFirstByUserIdOrderByAnalyzedAtDesc(userId)
+                .orElse(null);
+
+        if (history == null) {
+            return null;
+        }
+
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        try {
+            return JobMatchHistoryResponse.builder()
+                    .id(history.getId())
+                    .jobDescription(history.getJobDescription())
+                    .matchScore(history.getMatchScore())
+                    .matchingSkills(objectMapper.readValue(
+                            history.getMatchingSkills(), List.class))
+                    .missingSkills(objectMapper.readValue(
+                            history.getMissingSkills(), List.class))
+                    .recommendations(objectMapper.readValue(
+                            history.getRecommendations(), List.class))
+                    .analyzedAt(history.getAnalyzedAt())
+                    .build();
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to parse latest job match", e);
+        }
+    }
 }

@@ -10,6 +10,6 @@ import lombok.NoArgsConstructor;
 public class StudyPlanRequest {
 
     private int numberOfDays;
-
+    private String topic;
     private int hoursPerDay;
 }

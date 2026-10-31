@@ -56,4 +56,21 @@ public class JobMatchController {
 
         return ResponseEntity.ok(history);
     }
+
+    @GetMapping("/latest")
+    public ResponseEntity<JobMatchHistoryResponse> getLatestMatch(
+            Authentication authentication) {
+
+        String email = authentication.getName();
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        JobMatchHistoryResponse response =
+                jobMatchService.getLatestMatch(user.getId());
+
+        return response == null
+                ? ResponseEntity.noContent().build()
+                : ResponseEntity.ok(response);
+    }
 }

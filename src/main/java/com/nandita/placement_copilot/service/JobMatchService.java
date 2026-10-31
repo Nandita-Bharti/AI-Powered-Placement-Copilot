@@ -16,4 +16,5 @@ public interface JobMatchService {
     List<JobMatchHistoryResponse> getMatchHistory(
             Long userId
     );
+    JobMatchHistoryResponse getLatestMatch(Long userId);
 }

@@ -27,8 +27,8 @@ import "./Interview.css";
 
 function Interview() {
   const [interviewType, setInterviewType] = useState("JAVA_BACKEND");
+  const [topic, setTopic] = useState("");
   const [numberOfQuestions, setNumberOfQuestions] = useState(5);
-
   const [interview, setInterview] = useState(null);
   const [questionNumber, setQuestionNumber] = useState(1);
   const [question, setQuestion] = useState("");
@@ -53,32 +53,55 @@ function Interview() {
     return token;
   };
 
-  const handleStartInterview = async () => {
-    try {
-      setLoading(true);
-      setError("");
-      setInterview(null);
-      setResult(null);
-      setEvaluation(null);
-      setAnswer("");
 
-      const token = getAuthToken();
+const handleStartInterview = async () => {
+  if (!topic.trim()) {
+    setError("Please enter a topic for your interview.");
+    return;
+  }
 
-      const data = await startInterview(
-        interviewType,
-        numberOfQuestions,
-        token
-      );
+  if (topic.trim().length > 150) {
+    setError("Topic must be 150 characters or fewer.");
+    return;
+  }
 
-      setInterview(data);
-      setQuestion(data.question);
-      setQuestionNumber(data.questionNumber || 1);
-    } catch (err) {
-      setError(err.message || "Could not start the interview.");
-    } finally {
-      setLoading(false);
-    }
-  };
+  try {
+    setLoading(true);
+    setError("");
+    setInterview(null);
+    setResult(null);
+    setEvaluation(null);
+    setAnswer("");
+
+    const token = getAuthToken();
+
+    const data = await startInterview(
+      interviewType,
+      topic.trim(),
+      numberOfQuestions,
+      token
+    );
+
+    setInterview(data);
+    setQuestion(data.question);
+    setQuestionNumber(data.questionNumber || 1);
+  } catch (err) {
+    setError(err.message || "Could not start the interview.");
+  } finally {
+    setLoading(false);
+  }
+};
+<div className="interview-topic-field">
+  <label htmlFor="interview-topic">What do you want to practise?</label>
+  <input
+    id="interview-topic"
+    type="text"
+    value={topic}
+    onChange={(e) => setTopic(e.target.value)}
+    placeholder="e.g. Spring Boot, Java Collections, SQL Joins"
+    maxLength={150}
+  />
+</div>
 
   const handleSubmitAnswer = async () => {
     if (!answer.trim()) {
@@ -247,6 +270,27 @@ function Interview() {
               <span>Communication, motivation and behavioral questions</span>
             </button>
           </div>
+
+
+            <div className="interview-topic-field">
+              <label htmlFor="interview-topic">
+                What topic do you want to practise?
+              </label>
+
+              <input
+                id="interview-topic"
+                type="text"
+                value={topic}
+                onChange={(e) => setTopic(e.target.value)}
+                placeholder="e.g. Spring Boot, Java Collections, SQL Joins"
+                maxLength={150}
+              />
+
+              <p className="interview-topic-hint">
+                Enter any subject you want the AI interviewer to focus on.
+              </p>
+            </div>
+
 
           <div className="interview-config-field">
             <label htmlFor="interview-question-count">

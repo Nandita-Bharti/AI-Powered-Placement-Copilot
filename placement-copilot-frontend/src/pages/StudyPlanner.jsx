@@ -20,6 +20,7 @@ import "./StudyPlanner.css";
 function StudyPlanner() {
   const [numberOfDays, setNumberOfDays] = useState(30);
   const [hoursPerDay, setHoursPerDay] = useState(2);
+  const [studyTopic, setStudyTopic] = useState("");
   const [studyPlan, setStudyPlan] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -42,11 +43,15 @@ const handleGeneratePlan = async () => {
       throw new Error("Please log in again to continue.");
     }
 
+    if (!studyTopic.trim()) {
+      throw new Error("Please enter a topic you want to learn.");
+    }
+
     const request = {
+      topic: studyTopic.trim(),
       numberOfDays: Number(numberOfDays),
       hoursPerDay: Number(hoursPerDay),
     };
-
     const result = await generateStudyPlan(request, token);
 
     setStudyPlan(result);
@@ -104,7 +109,21 @@ const handleGeneratePlan = async () => {
             <p>Choose a schedule that works for you.</p>
           </div>
         </div>
+        <div className="study-field study-topic-field">
+          <label htmlFor="study-topic">
+            <BookOpen size={15} />
+            What do you want to learn?
+          </label>
 
+          <input
+            id="study-topic"
+            type="text"
+            placeholder="e.g. Java, DSA, Machine Learning..."
+            value={studyTopic}
+            onChange={(e) => setStudyTopic(e.target.value)}
+            maxLength={150}
+          />
+        </div>
         <div className="study-config-grid">
           <div className="study-field">
             <label htmlFor="study-days">
@@ -157,8 +176,8 @@ const handleGeneratePlan = async () => {
             <strong>{numberOfDays * hoursPerDay} hours</strong>
           </div>
           <div>
-            <span>Target role</span>
-            <strong>Java Backend Developer</strong>
+            <span>Your learning topic</span>
+            <strong>{studyTopic.trim() || "Enter a topic below"}</strong>
           </div>
         </div>
 
@@ -296,7 +315,10 @@ const handleGeneratePlan = async () => {
                   <button
                     type="button"
                     className="history-study-button"
-                    onClick={() => setStudyPlan(plan)}
+                    onClick={() => {
+                      setStudyPlan(plan);
+                      setIsPlanMinimized(false);
+                    }}
                   >
                     View Plan
                   </button>

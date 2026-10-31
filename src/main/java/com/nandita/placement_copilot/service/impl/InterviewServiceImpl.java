@@ -46,6 +46,13 @@ public class InterviewServiceImpl implements InterviewService {
                     "Number of questions must be greater than 0"
             );
         }
+        if (request.getTopic() == null || request.getTopic().isBlank()) {
+            throw new RuntimeException("Interview topic is required");
+        }
+
+        if (request.getTopic().trim().length() > 150) {
+            throw new RuntimeException("Interview topic must be 150 characters or fewer");
+        }
 
         User user = userRepository.findById(userId)
                 .orElseThrow(() ->
@@ -62,36 +69,41 @@ public class InterviewServiceImpl implements InterviewService {
 
         interview = interviewRepository.save(interview);
 
+
         String prompt = """
-                You are an expert technical interviewer.
+        You are an expert technical interviewer.
 
-                Conduct a technical interview for a student.
+        Conduct a placement interview for a student.
 
-                Interview Type:
-                %s
+        Interview Type:
+        %s
 
-                Total Questions:
-                %d
+        Candidate's Chosen Topic:
+        %s
 
-                This is Question Number:
-                1
+        Total Questions:
+        %d
 
-                Generate ONE interview question.
+        This is Question Number:
+        1
 
-                Rules:
-                - Ask exactly one question.
-                - Make it appropriate for a placement interview.
-                - For JAVA_BACKEND, focus on Java, Spring Boot,
-                  REST APIs, databases, Spring Security,
-                  Hibernate/JPA, Docker or backend concepts.
-                - For DSA, ask one DSA interview question.
-                - Do not provide the answer.
-                - Do not provide hints.
-                - Return only the question text.
-                """.formatted(
+        Generate ONE interview question specifically about the
+        candidate's chosen topic.
+
+        Rules:
+        - Ask exactly one question.
+        - Focus on the chosen topic, not an unrelated subject.
+        - Make the difficulty appropriate for a placement interview.
+        - For HR interviews, use the chosen topic to guide the question
+          while keeping it appropriate for an HR interview.
+        - Do not provide the answer or hints.
+        - Return only the question text.
+        """.formatted(
                 request.getInterviewType(),
+                request.getTopic().trim(),
                 request.getNumberOfQuestions()
         );
+
 
         ChatClient chatClient =
                 chatClientBuilder.build();

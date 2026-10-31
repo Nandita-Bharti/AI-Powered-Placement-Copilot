@@ -41,6 +41,11 @@ public class StudyPlanServiceImpl implements StudyPlanService {
             throw new RuntimeException(
                     "Number of days must be greater than 0");
         }
+        if (request.getTopic() == null || request.getTopic().isBlank()) {
+            throw new RuntimeException("Please enter a topic to study");
+        }
+
+        String topic = request.getTopic().trim();
 
         if (request.getHoursPerDay() <= 0) {
             throw new RuntimeException(
@@ -59,63 +64,53 @@ public class StudyPlanServiceImpl implements StudyPlanService {
                 .reduce("", (a, b) -> a + "\n" + b);
 
         String prompt = """
-                You are an expert career mentor specializing in
-                Java Backend Developer placements.
+        You are an expert tutor and learning-plan designer.
 
-                Create a personalized study plan for the student.
+        Create a personalized study plan for the following topic:
+        %s
 
-                STUDENT TARGET ROLE:
-                %s
+        The student wants to learn this topic, not necessarily prepare
+        for a particular job role.
 
-                CURRENT SKILLS:
-                %s
+        STUDENT'S EXISTING SKILLS (use only if relevant):
+        %s
 
-                SKILLS IDENTIFIED AS MISSING FROM RECENT JOB MATCHES:
-                %s
+        NUMBER OF DAYS:
+        %d
 
-                NUMBER OF DAYS:
-                %d
+        HOURS AVAILABLE PER DAY:
+        %d
 
-                HOURS AVAILABLE PER DAY:
-                %d
+        Return ONLY valid JSON using exactly this structure:
+        {
+          "targetRole": "",
+          "totalDays": 0,
+          "days": [
+            {
+              "day": 1,
+              "topic": "",
+              "tasks": [],
+              "estimatedHours": 0
+            }
+          ]
+        }
 
-                Return ONLY valid JSON.
-
-                Use exactly this structure:
-
-                {
-                  "targetRole": "",
-                  "totalDays": 0,
-                  "days": [
-                    {
-                      "day": 1,
-                      "topic": "",
-                      "tasks": [],
-                      "estimatedHours": 0
-                    }
-                  ]
-                }
-
-                Rules:
-
-                - Create exactly %d days.
-                - Each day's estimatedHours must be at most %d.
-                - Prioritize skills that are missing from the student's
-                  recent job matches.
-                - Consider the student's existing skills so that
-                  unnecessary beginner topics are avoided.
-                - Include practical coding or project tasks where useful.
-                - Include revision and interview preparation near the end.
-                - Keep tasks realistic for the available study time.
-                - Do not invent skills the student already has.
-                - Return JSON only.
-                - Do not use markdown code fences.
-                """.formatted(
-                profile.getTargetRole(),
-                profile.getSkills(),
-                missingSkills,
+        Rules:
+        - Set targetRole to the requested learning topic: %s.
+        - Create exactly %d days.
+        - Each day's estimatedHours must be at most %d.
+        - Organize topics from foundational concepts to advanced concepts.
+        - Include practical exercises and projects where appropriate.
+        - Include revision and a final assessment near the end.
+        - Keep tasks realistic for the available study time.
+        - Make every day's topics relevant to the requested topic.
+        - Return JSON only, without Markdown code fences.
+        """.formatted(
+                topic,
+                profile.getSkills() == null ? "Not provided" : profile.getSkills(),
                 request.getNumberOfDays(),
                 request.getHoursPerDay(),
+                topic,
                 request.getNumberOfDays(),
                 request.getHoursPerDay()
         );
