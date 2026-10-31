@@ -1,5 +1,5 @@
 
-const API_BASE_URL = "http://localhost:8082";
+const API_BASE_URL = "https://ai-powered-placement-copilot.onrender.com";
 
 async function request(endpoint, token, options = {}) {
   const response = await fetch(`${API_BASE_URL}${endpoint}`, {

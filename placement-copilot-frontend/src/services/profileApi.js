@@ -1,4 +1,4 @@
-const API_BASE_URL = "http://localhost:8082";
+const API_BASE_URL = "https://ai-powered-placement-copilot.onrender.com";
 
 async function profileRequest(path, options = {}) {
   const token = localStorage.getItem("token");

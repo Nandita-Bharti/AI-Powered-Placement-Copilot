@@ -1,4 +1,4 @@
-const API_BASE_URL = "http://localhost:8082";
+const API_BASE_URL = "https://ai-powered-placement-copilot.onrender.com";
 
 export async function matchJob(jobDescription, token) {
   const response = await fetch(

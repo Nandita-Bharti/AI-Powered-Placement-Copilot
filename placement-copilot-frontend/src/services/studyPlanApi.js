@@ -1,11 +1,9 @@
-
-const API_BASE_URL = "http://localhost:8082";
-
+const API_BASE_URL = "https://ai-powered-placement-copilot.onrender.com";
 
 export async function generateStudyPlan(request, token) {
   try {
     const response = await fetch(
-      "http://localhost:8082/api/study-plan",
+      "https://ai-powered-placement-copilot.onrender.com/api/study-plan",
       {
         method: "POST",
         headers: {
